@@ -15,12 +15,12 @@ import {
 
 // ── Firebase Config ──
 const firebaseConfig = {
-    apiKey: "Add your API Key",
-    authDomain: "taskflow-ai-manager.firebaseapp.com",
-    projectId: "taskflow-ai-manager",
-    storageBucket: "taskflow-ai-manager.firebasestorage.app",
-    messagingSenderId: "Add you Messaging Sender ID",
-    appId: "Add your App ID"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -1156,3 +1156,4 @@ function getSampleTasks() {
 // ── Boot ──
 bindEvents();
 setupAuth();
+
