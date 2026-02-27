@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="AI-powered Task Manager with smart prioritization, progress tracking, and weekly reviews. Access from anywhere.">
+    <title>TaskFlow AI — Smart Task Manager</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+
+<body>
+
+    <!-- SVG Gradient Definition -->
+    <svg style="width:0;height:0;position:absolute">
+        <defs>
+            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#a78bfa" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- ===== AUTH SCREEN ===== -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-card">
+            <div class="auth-logo">⚡</div>
+            <h1 class="auth-title">TaskFlow AI</h1>
+            <p class="auth-subtitle">Sign in to sync your tasks across all devices</p>
+            <button class="btn btn-google" id="btnGoogleSignIn">
+                <svg width="18" height="18" viewBox="0 0 18 18">
+                    <path fill="#4285F4"
+                        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" />
+                    <path fill="#34A853"
+                        d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" />
+                    <path fill="#FBBC05"
+                        d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" />
+                    <path fill="#EA4335"
+                        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 2.58 9 2.58z" />
+                </svg>
+                Continue with Google
+            </button>
+            <div class="auth-divider"><span>or</span></div>
+            <button class="btn btn-anonymous" id="btnAnonSignIn">
+                👤 Continue as Guest
+            </button>
+            <p class="auth-note">Guest data is device-only. Sign in with Google to sync everywhere.</p>
+        </div>
+    </div>
+
+    <!-- ===== MAIN APP ===== -->
+    <div class="app-container" id="appContainer" style="display:none;">
+        <!-- ===== HEADER ===== -->
+        <header class="app-header">
+            <div class="header-top">
+                <div></div>
+                <div class="header-center">
+                    <h1>⚡ TaskFlow AI</h1>
+                    <p class="tagline">Intelligent task management — prioritize, track, and conquer.</p>
+                </div>
+                <div class="user-menu" id="userMenu">
+                    <div class="user-avatar" id="userAvatar" title="Account">👤</div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-info">
+                            <span class="user-name" id="userName">User</span>
+                            <span class="user-email" id="userEmail">guest</span>
+                        </div>
+                        <hr style="border-color:var(--border-subtle);margin:0.3rem 0;">
+                        <button class="dropdown-item" id="btnSignOut">🚪 Sign Out</button>
+                    </div>
+                </div>
+            </div>
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="globalSearch" placeholder="Search tasks by title, category, or description..."
+                    autocomplete="off">
+            </div>
+        </header>
+
+        <!-- ===== SYNC INDICATOR ===== -->
+        <div class="sync-indicator" id="syncIndicator" style="display:none;">
+            <span class="sync-spinner"></span> Syncing...
+        </div>
+
+        <!-- ===== STATS DASHBOARD ===== -->
+        <section class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon total">📋</div>
+                <div class="stat-info">
+                    <h3 id="statTotal">0</h3>
+                    <p>Total Tasks</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon done">✅</div>
+                <div class="stat-info">
+                    <h3 id="statDone">0</h3>
+                    <p>Completed</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon progress">🔄</div>
+                <div class="stat-info">
+                    <h3 id="statInProgress">0</h3>
+                    <p>In Progress</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon overdue">🚨</div>
+                <div class="stat-info">
+                    <h3 id="statOverdue">0</h3>
+                    <p>Overdue</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="progress-ring-container">
+                    <svg class="progress-ring" width="44" height="44">
+                        <circle class="progress-ring-bg" cx="22" cy="22" r="18" />
+                        <circle class="progress-ring-fill" id="progressRingCircle" cx="22" cy="22" r="18"
+                            stroke-dasharray="113.1" stroke-dashoffset="113.1" />
+                    </svg>
+                    <span class="progress-ring-text" id="progressPercent">0%</span>
+                </div>
+                <div class="stat-info">
+                    <h3 id="statUpcoming">0</h3>
+                    <p>Upcoming</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TOOLBAR ===== -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <button class="btn btn-primary" id="btnAddTask">
+                    <span>➕</span> Add Task
+                </button>
+
+                <select class="filter-select" id="filterStatus">
+                    <option value="all">All Status</option>
+                    <option value="todo">📌 To Do</option>
+                    <option value="in-progress">🔄 In Progress</option>
+                    <option value="done">✅ Done</option>
+                </select>
+
+                <select class="filter-select" id="filterPriority">
+                    <option value="all">All Priority</option>
+                    <option value="critical">🔴 Critical</option>
+                    <option value="high">🟠 High</option>
+                    <option value="medium">🟡 Medium</option>
+                    <option value="low">🟢 Low</option>
+                </select>
+            </div>
+
+            <div class="toolbar-right">
+                <button class="btn btn-secondary" id="btnImport" title="Import Tasks">
+                    <span>📥</span> Import
+                </button>
+                <button class="btn btn-secondary" id="btnExport" title="Export Tasks">
+                    <span>📤</span> Export
+                </button>
+                <button class="btn btn-secondary" id="btnReview" title="Weekly Review">
+                    <span>📊</span> Review
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== TASK LIST ===== -->
+        <main class="task-groups" id="taskGroups">
+            <!-- Rendered by JS -->
+        </main>
+    </div>
+
+    <!-- ===== ADD/EDIT TASK MODAL ===== -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Task</h2>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="taskTitle">Task Title *</label>
+                    <input type="text" id="taskTitle" placeholder="What needs to be done?" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Description</label>
+                    <textarea id="taskDescription" placeholder="Add details or notes..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <div class="priority-options" id="priorityOptions">
+                        <button type="button" class="priority-option" data-priority="critical">🔴 Critical</button>
+                        <button type="button" class="priority-option" data-priority="high">🟠 High</button>
+                        <button type="button" class="priority-option selected" data-priority="medium">🟡 Medium</button>
+                        <button type="button" class="priority-option" data-priority="low">🟢 Low</button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskStatus">Status</label>
+                        <select id="taskStatus">
+                            <option value="todo">📌 To Do</option>
+                            <option value="in-progress">🔄 In Progress</option>
+                            <option value="done">✅ Done</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDate">Target Date *</label>
+                        <input type="date" id="taskDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="taskCategory">Category</label>
+                    <input type="text" id="taskCategory" placeholder="e.g., Work, Personal, Urgent...">
+                </div>
+                <div class="form-group recurring-section">
+                    <div class="recurring-toggle-row">
+                        <label for="taskRecurring" style="cursor: pointer;">🔁 Recurring Task</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="taskRecurring">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="recurring-options" id="recurringOptions">
+                        <label for="taskRecurringFreq"
+                            style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.3rem;display:block;">Repeat
+                            every</label>
+                        <select id="taskRecurringFreq">
+                            <option value="daily">📅 Daily</option>
+                            <option value="weekdays">🏢 Weekdays (Mon–Fri)</option>
+                            <option value="weekly">📆 Weekly</option>
+                            <option value="monthly">🗓️ Monthly</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modalCancel">Cancel</button>
+                <button class="btn btn-primary" id="modalSave">💾 Save Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DELETE CONFIRM MODAL ===== -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+                <button class="modal-close" id="confirmClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-content">
+                    <div class="confirm-icon">🗑️</div>
+                    <p>Are you sure you want to delete<br><span class="task-name-highlight"
+                            id="confirmTaskName"></span>?</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
+                <button class="btn btn-danger" id="confirmDelete">🗑️ Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== IMPORT MODAL ===== -->
+    <div class="modal-overlay" id="importModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2>📥 Import Tasks</h2>
+                <button class="modal-close" id="importClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="import-drop-zone" id="importDropZone">
+                    <div class="drop-icon">📁</div>
+                    <p>Drag & drop a file here, or <strong>click to browse</strong></p>
+                    <p class="file-types">Supports CSV and JSON files</p>
+                </div>
+                <input type="file" id="importFileInput" accept=".csv,.json">
+                <div class="import-preview" id="importPreview" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="importCancel">Cancel</button>
+                <button class="btn btn-primary" id="importConfirm" disabled>📥 Import Tasks</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== EXPORT MODAL ===== -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>📤 Export Tasks</h2>
+                <button class="modal-close" id="exportClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                    Choose a format to download your tasks:
+                </p>
+                <div class="form-row">
+                    <button class="btn btn-secondary" id="exportCSV" style="justify-content: center; padding: 1rem;">
+                        <span>📄</span> Export as CSV
+                    </button>
+                    <button class="btn btn-secondary" id="exportJSON" style="justify-content: center; padding: 1rem;">
+                        <span>📋</span> Export as JSON
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="exportCancel">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== WEEKLY REVIEW PANEL ===== -->
+    <div class="review-panel-overlay" id="reviewOverlay"></div>
+    <aside class="review-panel" id="reviewPanel">
+        <div class="review-panel-header">
+            <h2>📊 Weekly Review</h2>
+            <button class="modal-close" id="reviewClose">✕</button>
+        </div>
+        <div class="review-content" id="reviewContent">
+            <!-- Rendered by JS -->
+        </div>
+    </aside>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== FIREBASE SDKs (Module) ===== -->
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
