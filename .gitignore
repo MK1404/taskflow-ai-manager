@@ -1,0 +1,10 @@
+# Firebase
+.firebase/
+firebase-export.json
+
+# Dependencies (if you ever add Node.js)
+node_modules/
+
+# OS generated files
+.DS_Store
+Thumbs.db
