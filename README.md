@@ -1,12 +1,10 @@
-# taskflow-ai-manager
-An intelligent, Firebase-powered task manager featuring real-time sync, smart prioritization, and weekly analytics.
-# ⚡ TaskFlow AI
+⚡ TaskFlow AI
 
 An intelligent, premium-designed task management application built to help users prioritize, track, and conquer their daily workflows. Featuring real-time cloud syncing, data-driven weekly reviews, and offline-ready guest modes.
 
 🌍 **Live Demo:** [taskflow-ai-manager.web.app](https://taskflow-ai-manager.web.app/)
 
-## ✨ Key Features
+✨ Key Features
 
 * **Authentication Flexibility:** Sign in with Google for real-time cloud syncing across devices, or continue as a Guest using local browser storage.
 * **Real-Time Cloud Sync:** Powered by Firebase Firestore, ensuring your tasks are always up-to-date across all your devices.
@@ -15,7 +13,7 @@ An intelligent, premium-designed task management application built to help users
 * **Data Portability:** Full support for importing and exporting your task data via CSV and JSON.
 * **Recurring Tasks:** Automate your workflow with daily, weekday, weekly, or monthly recurring tasks.
 
-## 🛠️ Tech Stack
+🛠️ Tech Stack
 
 * **Frontend:** HTML5, CSS3 (Custom Premium Design System), Vanilla JavaScript (ESM)
 * **Backend/BaaS:** Firebase Auth, Firebase Firestore
